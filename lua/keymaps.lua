@@ -22,6 +22,9 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 -- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic quick fix' })
+
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --
@@ -50,5 +53,27 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.hl.on_yank()
   end,
 })
+
+-- the `-` key reveal the current file, or if in an unsaved file, the current working directory.
+vim.keymap.set('n', '-', function()
+  local reveal_file = vim.fn.expand '%:p'
+  if reveal_file == '' then
+    reveal_file = vim.fn.getcwd()
+  else
+    local f = io.open(reveal_file, 'r')
+    if f then
+      f.close(f)
+    else
+      reveal_file = vim.fn.getcwd()
+    end
+  end
+  require('neo-tree.command').execute {
+    action = 'focus', -- OPTIONAL, this is the default value
+    source = 'filesystem', -- OPTIONAL, this is the default value
+    position = 'left', -- OPTIONAL, this is the default value
+    reveal_file = reveal_file, -- path to file or folder to reveal
+    reveal_force_cwd = true, -- change cwd without asking if needed
+  }
+end, { desc = 'Open neo-tree at current file or working directory' })
 
 -- vim: ts=2 sts=2 sw=2 et
