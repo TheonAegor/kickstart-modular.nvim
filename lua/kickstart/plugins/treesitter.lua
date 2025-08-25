@@ -4,7 +4,7 @@ return {
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    dependencies = { 'nvim-treesitter/nvim-treesitter-context' },
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter-context' },
     opts = {
       ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
@@ -18,19 +18,19 @@ return {
       },
       indent = { enable = true, disable = { 'ruby' } },
     },
-    config = function()
-      require('treesitter-context').setup {
-        enable = true,
-        max_lines = 0,
-        min_window_height = 0,
-        line_numbers = true,
-        multiline_threshold = 20,
-        trim_scope = 'outer',
-        mode = 'cursor',
-        separator = nil,
-        zindex = 20,
-      }
-    end,
+    -- config = function()
+    --   require('treesitter-context').setup {
+    --     enable = true,
+    --     max_lines = 0,
+    --     min_window_height = 0,
+    --     line_numbers = true,
+    --     multiline_threshold = 20,
+    --     trim_scope = 'outer',
+    --     mode = 'cursor',
+    --     separator = nil,
+    --     zindex = 20,
+    --   }
+    -- end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --

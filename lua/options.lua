@@ -71,4 +71,21 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- Настройки табуляции - 2 пробела
+vim.o.tabstop = 2          -- Размер tab символа в пробелах
+vim.o.shiftwidth = 2       -- Размер отступа для автоматических операций (>>, <<, ==)
+vim.o.softtabstop = 2      -- Количество пробелов при нажатии Tab в режиме вставки
+vim.o.expandtab = true     -- Конвертировать табы в пробелы
+
+-- Автокоманда для применения настроек табуляции ко всем файлам
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "*",
+  callback = function()
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.softtabstop = 2
+    vim.opt_local.expandtab = true
+  end,
+})
+
 -- vim: ts=2 sts=2 sw=2 et
