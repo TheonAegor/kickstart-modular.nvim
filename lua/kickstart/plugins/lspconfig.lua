@@ -184,6 +184,27 @@ return {
         end,
       })
 
+      -- TypeScript/JavaScript specific autocommands for formatting and organizing imports
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        pattern = { '*.ts', '*.tsx', '*.js', '*.jsx' },
+        callback = function()
+          -- Organize imports
+          local params = vim.lsp.util.make_range_params()
+          params.context = { only = { 'source.organizeImports' } }
+          local result = vim.lsp.buf_request_sync(0, 'textDocument/codeAction', params, 3000)
+          for cid, res in pairs(result or {}) do
+            for _, r in pairs(res.result or {}) do
+              if r.edit then
+                local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or 'utf-16'
+                vim.lsp.util.apply_workspace_edit(r.edit, enc)
+              end
+            end
+          end
+          -- Format code
+          vim.lsp.buf.format { async = false }
+        end,
+      })
+
       -- Diagnostic Config
       -- See :help vim.diagnostic.Opts
       vim.diagnostic.config {
@@ -254,8 +275,34 @@ return {
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
-        --
+        ts_ls = {
+          settings = {
+            typescript = {
+              inlayHints = {
+                includeInlayParameterNameHints = 'all',
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+            javascript = {
+              inlayHints = {
+                includeInlayParameterNameHints = 'all',
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+          },
+        },
 
         lua_ls = {
           -- cmd = { ... },
@@ -289,6 +336,8 @@ return {
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'prettier', -- Used to format TypeScript/JavaScript/JSON/CSS/HTML
+        'eslint_d', -- Fast ESLint daemon for linting TypeScript/JavaScript
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
