@@ -318,6 +318,21 @@ return {
             },
           },
         },
+        yamlls = {
+          settings = {
+            yaml = {
+              schemas = {
+                -- Use OpenAPI 3 schema for swagger.yaml validation
+                ['https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.0/schema.json'] = '/*swagger.yaml',
+                ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
+                -- Add more schemas as needed
+              },
+              validate = true,
+              completion = true,
+              format = { enable = true },
+            },
+          },
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -338,6 +353,7 @@ return {
         'stylua', -- Used to format Lua code
         'prettier', -- Used to format TypeScript/JavaScript/JSON/CSS/HTML
         'eslint_d', -- Fast ESLint daemon for linting TypeScript/JavaScript
+        'yamlls',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
