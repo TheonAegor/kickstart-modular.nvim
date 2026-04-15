@@ -71,6 +71,19 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- Disable swap files (git + persistent undo cover recovery)
+vim.o.swapfile = false
+
+-- Auto-save on focus lost or buffer switch
+vim.api.nvim_create_autocmd({ 'FocusLost', 'BufLeave' }, {
+  pattern = '*',
+  callback = function()
+    if vim.bo.modified and vim.bo.buftype == '' and vim.fn.expand('%') ~= '' then
+      vim.cmd('silent! write')
+    end
+  end,
+})
+
 -- Настройки табуляции - 2 пробела
 vim.o.tabstop = 2          -- Размер tab символа в пробелах
 vim.o.shiftwidth = 2       -- Размер отступа для автоматических операций (>>, <<, ==)
